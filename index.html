@@ -145,7 +145,8 @@
                 <button class="unit-btn time-none" id="acc-02" onclick="toggleAccount('02')">계정 02</button>
             </div>
         </div>
-    </div> <div class="manual-section" style="margin-top: 15px; padding: 15px; background-color: #fff; border: 1px dashed #e9e4d9; border-radius: 12px; font-size: 13px; line-height: 1.6; color: #495057;">
+    </div> 
+    <div class="manual-section" style="margin-top: 15px; padding: 15px; background-color: #fff; border: 1px dashed #e9e4d9; border-radius: 12px; font-size: 13px; line-height: 1.6; color: #495057;">
         <div style="font-weight:bold; margin-bottom:8px; color: #222;">📘 사용설명서</div>
         <div style="display: flex; justify-content: space-between; gap: 20px;">
             <span style="flex: 1;"><strong>  • </strong> 본인 이름 입력 시 자동 저장되고 관제사들은 07시부터 근무시간 그룹별로 지정했습니다. <br>  •  동일 사이트 기체는 자동으로 묶이고 기체는 선택한 순서대로 추가됩니다. <br> • 시간은 +1Hour로 자동 반영되며 출차 예정은 (교대Hour:50)로 고정됩니다. <br>  </span>
@@ -155,7 +156,6 @@
 </div>
 
 <script>
-    // [데이터 및 로직 부분은 이전과 동일하게 유지하여 모든 기능 정상 작동]
     const personnelData = [{ name: "차현모", time: "", class: "time-none" }, { name: "김지훈", time: "(0700-1600)(U)", class: "time-07" }, { name: "오정훈", time: "(0700-1600)(U)", class: "time-07" }, { name: "강상윤", time: "(0700-1600)(U)", class: "time-07" }, { name: "박계원", time: "(0800-1700)(U)", class: "time-08" }, { name: "박효선", time: "(0800-1700)(U)", class: "time-08" }, { name: "신지섭", time: "(0900-1800)(U)", class: "time-09" }, { name: "안혜림", time: "(0900-1800)(U)", class: "time-09" }, { name: "김경환", time: "(0900-1800)(U)", class: "time-09" }, { name: "최윤혁", time: "(0900-1800)(U)", class: "time-09" }, { name: "이길범", time: "(0900-1800)(U)", class: "time-09" }, { name: "박은선", time: "(1100-2000)(U)", class: "time-11" }, { name: "송주현", time: "(1100-2000)(U)", class: "time-11" }, { name: "장재원", time: "(1100-2000)(U)", class: "time-11" }, { name: "이환", time: "(1100-2000)(U)", class: "time-11" }, { name: "박혜영", time: "(1100-2000)(U)", class: "time-11" }, { name: "김동진", time: "(1100-2000)(U)", class: "time-11" }, { name: "신은정", time: "(1300-2200)(U)", class: "time-13" }, { name: "신현철", time: "(1300-2200)(U)", class: "time-13" }, { name: "이도연", time: "(1300-2200)(U)", class: "time-13" }, { name: "박효빈", time: "(1400-2300)(U)", class: "time-14" }, { name: "김가은", time: "(1500-2400)(U)", class: "time-15" }, { name: "서형민", time: "(1500-2400)(U)", class: "time-15" }, { name: "최성환", time: "(1500-2400)(U)", class: "time-15" }, { name: "박수연", time: "(1800-0300)(U)", class: "time-18" }, { name: "이규순", time: "(1800-0300)(U)", class: "time-18" }, { name: "강철환", time: "(1800-0300)(U)", class: "time-18" }, { name: "최선호", time: "(2000-0500)(U)", class: "time-20" }, { name: "최정기", time: "(2000-0500)(U)", class: "time-20" }, { name: "고상연", time: "(2200-0700)(U)", class: "time-22" }, { name: "임다연", time: "(2200-0700)(U)", class: "time-22" }, { name: "임아연", time: "(2200-0700)(U)", class: "time-22" }, { name: "안대관", time: "(2330-0830)(U)", class: "time-23" }];
     const rawUnits = ["용인 고진", "서강대", "경희대 1", "경희대 2", "성남 200", "성남 201", "성남 202", "성남 203", "부산 1", "부산 2", "부산 3", "부산 4", "파주", "리센츠 1", "리센츠 2", "평택 1", "평택 2", "DMZ", "부산 서면", "부천 중동", "고양 래미안", "인력개발원", "엘스 1", "엘스 2", "송도 국캠", "자체순찰 01", "자체순찰 02", "부경대", "김포 1", "김포 2", "평택 지제", "두루아이 3", "쉴더스", "신동백", "청담 르엘", "전주천", "아주대 1", "아주대 2", "강원대 1", "강원대 2"];
     const outUnitsList = ["부산 1", "부산 2", "부산 3", "부산 4", "성남 200", "성남 201", "성남 202", "성남 203", "자체순찰 01", "자체순찰 02"];
@@ -252,6 +252,7 @@
         return groups.join(" / ");
     }
 
+    // 이 부분이 수정되었습니다.
     function updatePreview() {
         const nextH = new Date(new Date().getTime() + 3600000).getHours();
         const h = String(nextH).padStart(2, '0');
@@ -268,13 +269,25 @@
             if (selection.people[1]) p2 = getP(selection.people[1]);
         }
 
-        document.getElementById('preview').innerText = `[${h}]시 다중 모니터링 교대
-${p1} > ${p2}
-• 교대: ${formatUnitsWithGrouping(selection.shift)}
-• 예정: ${formatUnitsWithGrouping(selection.plan)}
-${selection.out.length > 0 ? "• 출차: ("+h+":50) " + formatUnitsWithGrouping(selection.out) : ""}
+        // 텍스트 라인들을 배열에 순서대로 담습니다.
+        const lines = [
+            `[${h}]시 다중 모니터링 교대`,
+            `${p1} > ${p2}`,
+            `• 교대: ${formatUnitsWithGrouping(selection.shift)}`,
+            `• 예정: ${formatUnitsWithGrouping(selection.plan)}`
+        ];
 
-${selection.account.length === 0 ? "• 멀티 계정 미사용" : "• 멀티 계정 " + selection.account.join(", ") + " 사용 중"}`;
+        // 출차가 있을 때만 라인을 추가합니다. (여백 엔터 방지)
+        if (selection.out.length > 0) {
+            lines.push(`• 출차: (${h}:50) ${formatUnitsWithGrouping(selection.out)}`);
+        }
+
+        // 멀티 계정 상태를 추가합니다. (미사용 시에도 바로 다음 줄에 오도록 설정)
+        const accText = selection.account.length === 0 ? "• 멀티 계정 미사용" : `• 멀티 계정 ${selection.account.join(", ")} 사용 중`;
+        lines.push(accText);
+
+        // join('\n')을 사용하여 각 항목 사이의 '빈 엔터 줄'을 완전히 없앱니다.
+        document.getElementById('preview').innerText = lines.join('\n');
     }
 
     function copyToClipboard() {
@@ -298,6 +311,3 @@ ${selection.account.length === 0 ? "• 멀티 계정 미사용" : "• 멀티 �
 </script>
 </body>
 </html>
-
-
-

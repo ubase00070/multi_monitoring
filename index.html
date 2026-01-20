@@ -274,7 +274,7 @@ ${p1} > ${p2}
 • 예정: ${formatUnitsWithGrouping(selection.plan)}
 ${selection.out.length > 0 ? "• 출차: ("+h+":50) " + formatUnitsWithGrouping(selection.out) : ""}
 
-${selection.account.length === 0 ? "• 멀티 계정 미사용" : "• 멀티 계정" + selection.account.join(", ") + " 사용 중"}`;
+${selection.account.length === 0 ? "• 멀티 계정 미사용" : "• 멀티 계정 " + selection.account.join(", ") + " 사용 중"}`;
     }
 
     function copyToClipboard() {
@@ -298,5 +298,6 @@ ${selection.account.length === 0 ? "• 멀티 계정 미사용" : "• 멀티 �
 </script>
 </body>
 </html>
+
 
 

@@ -294,19 +294,32 @@ ${accountText}`;
         document.getElementById('preview').innerText = result;
     }
 
-    function copyToClipboard() {
-        const text = document.getElementById('preview').innerText;
-        const textarea = document.createElement('textarea');
-        textarea.value = text; document.body.appendChild(textarea);
-        textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea);
-        const btn = document.getElementById('copyBtn');
-        const old = btn.innerText; btn.innerText = "복사 완료!"; btn.style.backgroundColor = "#4dabf7";
-        setTimeout(() => btn.innerText = old, 800);
-    }
+function copyToClipboard() {
+    const text = document.getElementById('preview').innerText;
+    const textarea = document.createElement('textarea');
+    textarea.value = text; document.body.appendChild(textarea);
+    textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea);
+    
+    const btn = document.getElementById('copyBtn');
+    const oldText = btn.innerText;
+    // 중요: 현재 버튼의 배경색을 변수에 '직접' 저장합니다.
+    const oldColor = "#37b24d"; 
+
+    // 1. 버튼 상태 변경 (하늘색 + 문구 변경)
+    btn.innerText = "복사 완료!";
+    btn.style.backgroundColor = "#4dabf7"; 
+
+    // 2. 0.8초 후에 원래대로 돌리기
+    setTimeout(() => {
+        btn.innerText = oldText;
+        btn.style.backgroundColor = oldColor; // 미리 저장해둔 초록색으로 복구
+    }, 800);
+}
     init();
 </script>
 </body>
 </html>
+
 
 
 

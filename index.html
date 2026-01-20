@@ -294,6 +294,9 @@ ${accountText}`;
         document.getElementById('preview').innerText = result;
     }
 
+// 함수 밖에 타이머 변수를 선언하여 클릭 시마다 공유하도록 합니다.
+let copyTimer = null;
+    
 function copyToClipboard() {
     const text = document.getElementById('preview').innerText;
     const textarea = document.createElement('textarea');
@@ -301,24 +304,30 @@ function copyToClipboard() {
     textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea);
     
     const btn = document.getElementById('copyBtn');
-    const oldText = btn.innerText;
-    // 중요: 현재 버튼의 배경색을 변수에 '직접' 저장합니다.
-    const oldColor = "#37b24d"; 
+    const oldText = "텍스트 복사하기"; // 원래 문구를 명시적으로 지정
+    const oldColor = "#37b24d";      // 원래 색상을 명시적으로 지정
 
-    // 1. 버튼 상태 변경 (하늘색 + 문구 변경)
+    // [핵심] 이미 돌고 있는 타이머가 있다면 취소 (연타 대응)
+    if (copyTimer) {
+        clearTimeout(copyTimer);
+    }
+
+    // 버튼 상태 변경
     btn.innerText = "복사 완료!";
     btn.style.backgroundColor = "#4dabf7"; 
 
-    // 2. 0.8초 후에 원래대로 돌리기
-    setTimeout(() => {
+    // 새로운 타이머 설정
+    copyTimer = setTimeout(() => {
         btn.innerText = oldText;
-        btn.style.backgroundColor = oldColor; // 미리 저장해둔 초록색으로 복구
+        btn.style.backgroundColor = oldColor;
+        copyTimer = null; // 타이머 종료 후 변수 초기화
     }, 800);
 }
     init();
 </script>
 </body>
 </html>
+
 
 
 

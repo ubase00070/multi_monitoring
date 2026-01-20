@@ -2,39 +2,65 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>교대 텍스트 생성기 - 최종 안정화 버전</title>
+    <title>모니터링 교대 텍스트 패널</title>
     <style>
         body { font-family: 'Malgun Gothic', sans-serif; padding: 15px; background-color: #f1f3f5; color: #333; margin: 0; }
         h2 { color: #495057; font-size: 1.1rem; margin: 0 0 10px 0; border-bottom: 2px solid #dee2e6; padding-bottom: 8px; }
         
-        .main-wrapper { display: grid; grid-template-columns: 1fr 380px; gap: 15px; max-width: 1500px; margin: auto; }
+        .main-wrapper { 
+            display: grid; 
+            grid-template-columns: 1fr 380px; 
+            gap: 15px; 
+            max-width: 1500px; 
+            margin: auto; 
+        }
+
         .left-panel { background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .section { margin-bottom: 8px; padding: 10px; border: 1px solid #f1f3f5; border-radius: 8px; background: #fafbfc; }
+        
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .section-title { font-weight: bold; display: block; color: #495057; border-left: 4px solid #adb5bd; padding-left: 8px; font-size: 0.85rem; }
         
         .user-save-zone { font-size: 12px; display: flex; align-items: center; gap: 8px; background: #e7f5ff; padding: 6px 12px; border-radius: 4px; border: 1px solid #a5d8ff; }
         .user-save-zone input[type="text"] { border: 1px solid #ced4da; border-radius: 3px; padding: 3px 8px; width: 80px; font-size: 12px; }
 
+        .reset-btn {
+            font-size: 11px; padding: 2px 6px; background: #fff; border: 1px solid #dee2e6;
+            border-radius: 4px; cursor: pointer; color: #868e96; transition: all 0.2s;
+        }
+        .reset-btn:hover { background: #fff5f5; color: #fa5252; border-color: #ffa8a8; }
+        
         .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
-        button.unit-btn { padding: 5px 9px; border: 1px solid #e9ecef; background: #fff; cursor: pointer; border-radius: 4px; transition: all 0.2s; font-size: 12px; border-bottom-width: 4px !important; }
-        button.unit-btn.active { border: 2px solid #222 !important; font-weight: bold !important; background-color: #4dabf7 !important; color: white !important; }
+        button.unit-btn { 
+            padding: 5px 9px; border: 1px solid #e9ecef; background: #fff; 
+            cursor: pointer; border-radius: 4px; transition: all 0.2s; font-size: 12px; color: #444;
+            border-bottom-width: 4px !important;
+        }
+        button.unit-btn:hover:not(:disabled) { transform: translateY(-1px); background: #f8f9fa; }
+        button.unit-btn.active { border: 2px solid #222 !important; font-weight: bold !important; z-index: 1; background-color: #4dabf7 !important; color: white !important; }
         
-        /* 시간대별 그라데이션 */
-        .time-07 { border-bottom: 4px solid #fff3bf !important; } .time-08 { border-bottom: 4px solid #ffe066 !important; }
-        .time-09 { border-bottom: 4px solid #fab005 !important; } .time-11 { border-bottom: 4px solid #a9e34b !important; }
-        .time-13 { border-bottom: 4px solid #69db7c !important; } .time-14 { border-bottom: 4px solid #38d9a9 !important; }
-        .time-15 { border-bottom: 4px solid #3bc9db !important; } .time-18 { border-bottom: 4px solid #4dabf7 !important; }
-        .time-20 { border-bottom: 4px solid #748ffc !important; } .time-22 { border-bottom: 4px solid #91a7ff !important; }
-        .time-23 { border-bottom: 4px solid #be4bdb !important; } .time-none { border-bottom: 4px solid #dee2e6 !important; }
+        button.acc-btn.active { background-color: #fd7e14 !important; border-color: #e8590c !important; }
 
-        .right-panel { position: sticky; top: 15px; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #dee2e6; }
-        #preview { background: #444b52; color: #ffffff; border-radius: 8px; padding: 18px; white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 15px; line-height: 1.7; margin-bottom: 12px; min-height: 320px; }
-        
+        button.unit-btn:disabled:not(.active) { opacity: 0.3; cursor: not-allowed; }
+
+/* 시간대별 그라데이션 컬러 구성 */
+        .time-07 { border-bottom: 4px solid #fff3bf !important; } /* 이른 아침: 연노랑 */
+        .time-08 { border-bottom: 4px solid #ffe066 !important; } /* 아침: 노랑 */
+        .time-09 { border-bottom: 4px solid #fab005 !important; } /* 오전: 진한 노랑/오렌지 */
+        .time-11 { border-bottom: 4px solid #a9e34b !important; } /* 낮: 연두 */
+        .time-13 { border-bottom: 4px solid #69db7c !important; } /* 오후 시작: 녹색 */
+        .time-14 { border-bottom: 4px solid #38d9a9 !important; } /* 오후: 민트 */
+        .time-15 { border-bottom: 4px solid #3bc9db !important; } /* 늦은 오후: 하늘 */
+        .time-18 { border-bottom: 4px solid #4dabf7 !important; } /* 저녁: 파랑 */
+        .time-20 { border-bottom: 4px solid #748ffc !important; } /* 밤: 남색 */
+        .time-22 { border-bottom: 4px solid #91a7ff !important; } /* 야간: 연보라 */
+        .time-23 { border-bottom: 4px solid #be4bdb !important; } /* 심야: 보라 */
+        .time-none { border-bottom: 4px solid #dee2e6 !important; } /* 설정없음: 연회색 */
+
+        .right-panel { position: sticky; top: 15px; height: fit-content; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #dee2e6; }
+        #preview { background: #ffffff; color: #212529; border: 1px solid #dee2e6; border-radius: 8px; padding: 18px; white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 15px; line-height: 1.7; margin-bottom: 12px; min-height: 320px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.15); }
         .copy-btn { width: 100%; padding: 14px; background: #37b24d; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-        /* [애니메이션용] 복사 완료 시 하늘색 클래스 */
-        .copy-btn.success { background-color: #4dabf7 !important; }
-        
-        .reset-btn { font-size: 11px; padding: 2px 6px; background: #fff; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; color: #868e96; }
+        .copy-btn:hover { background: #2f9e44; }
     </style>
 </head>
 <body>
@@ -42,38 +68,69 @@
 <div class="main-wrapper">
     <div class="left-panel">
         <h2>교대 설정 패널</h2>
+        
         <div class="section">
-            <div class="user-save-zone"><span>본인 이름:</span><input type="text" id="my-name-input" oninput="handleNameInput()"></div>
-            <div class="btn-group" id="person-container" style="margin-top:10px;"></div>
+            <div class="section-header">
+                <span class="section-title">1. 교대 인원 선택</span>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="user-save-zone">
+                        <span>본인 이름:</span>
+                        <input type="text" id="my-name-input" placeholder="이름 입력" oninput="handleNameInput()">
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group" id="person-container"></div>
         </div>
+
         <div class="section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: none; border: none; padding: 0;">
-            <div class="section"><div class="section-title">교대 기체</div><div class="btn-group" id="shift-container"></div></div>
-            <div class="section"><div class="section-title">예정 기체</div><div class="btn-group" id="plan-container"></div></div>
+            <div class="section">
+                <div class="section-header"><span class="section-title">2. 교대 기체</span><button class="reset-btn" onclick="resetSection('shift')">전체 해제</button></div>
+                <div class="btn-group" id="shift-container"></div>
+            </div>
+            <div class="section">
+                <div class="section-header"><span class="section-title">3. 예정 기체</span><button class="reset-btn" onclick="resetSection('plan')">전체 해제</button></div>
+                <div class="btn-group" id="plan-container"></div>
+            </div>
         </div>
-        <div class="section"><div class="section-title">출차 예정 기체</div><div class="btn-group" id="out-container"></div></div>
-        <div class="section"><div class="section-title">멀티 계정</div><div class="btn-group" id="account-container">
-            <button class="unit-btn acc-btn" id="acc-01" onclick="toggleAccount('01')">01</button>
-            <button class="unit-btn acc-btn" id="acc-02" onclick="toggleAccount('02')">02</button>
-        </div></div>
+        
+        <div class="section">
+            <div class="section-header"><span class="section-title">4. 출차 예정 기체</span><button class="reset-btn" onclick="resetSection('out')">전체 해제</button></div>
+            <div class="btn-group" id="out-container"></div>
+        </div>
+
+        <div class="section">
+            <span class="section-title">5. 멀티 계정 설정 (중복 선택 가능)</span>
+            <div class="btn-group" id="account-container">
+                <button class="unit-btn acc-btn" id="acc-01" onclick="toggleAccount('01')">01</button>
+                <button class="unit-btn acc-btn" id="acc-02" onclick="toggleAccount('02')">02</button>
+            </div>
+        </div>
     </div>
+
     <div class="right-panel">
+        <span class="section-title" style="border-color: #37b24d; margin-bottom: 10px;">실시간 텍스트 프리뷰</span>
         <div id="preview"></div>
         <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">텍스트 복사하기</button>
     </div>
 </div>
 
 <script>
-    // ... 데이터 및 핵심 로직 (이전과 동일)
-    const personnelData = [{ name: "차현모", time: "", class: "time-none" }, { name: "김지훈", time: "(0700-1600)(U)", class: "time-07" }, { name: "오정훈", time: "(0700-1600)(U)", class: "time-07" }, { name: "강상윤", time: "(0700-1600)(U)", class: "time-07" }, { name: "박계원", time: "(0800-1700)(U)", class: "time-08" }, { name: "박효선", time: "(0800-1700)(U)", class: "time-08" }, { name: "신지섭", time: "(0900-1800)(U)", class: "time-09" }, { name: "안혜림", time: "(0900-1800)(U)", class: "time-09" }, { name: "김경환", time: "(0900-1800)(U)", class: "time-09" }, { name: "최윤혁", time: "(0900-1800)(U)", class: "time-09" }, { name: "이길범", time: "(0900-1800)(U)", class: "time-09" }, { name: "박은선", time: "(1100-2000)(U)", class: "time-11" }, { name: "송주현", time: "(1100-2000)(U)", class: "time-11" }, { name: "장재원", time: "(1100-2000)(U)", class: "time-11" }, { name: "이환", time: "(1100-2000)(U)", class: "time-11" }, { name: "박혜영", time: "(1100-2000)(U)", class: "time-11" }, { name: "김동진", time: "(1100-2000)(U)", class: "time-11" }, { name: "신은정", time: "(1300-2200)(U)", class: "time-13" }, { name: "신현철", time: "(1300-2200)(U)", class: "time-13" }, { name: "이도연", time: "(1300-2200)(U)", class: "time-13" }, { name: "박효빈", time: "(1400-2300)(U)", class: "time-14" }, { name: "김가은", time: "(1500-2400)(U)", class: "time-15" }, { name: "서형민", time: "(1500-2400)(U)", class: "time-15" }, { name: "최성환", time: "(1500-2400)(U)", class: "time-15" }, { name: "박수연", time: "(1800-0300)(U)", class: "time-18" }, { name: "이규순", time: "(1800-0300)(U)", class: "time-18" }, { name: "강철환", time: "(1800-0300)(U)", class: "time-18" }, { name: "최선호", time: "(2000-0500)(U)", class: "time-20" }, { name: "최정기", time: "(2000-0500)(U)", class: "time-20" }, { name: "고상연", time: "(2200-0700)(U)", class: "time-22" }, { name: "임다연", time: "(2200-0700)(U)", class: "time-22" }, { name: "임아연", time: "(2200-0700)(U)", class: "time-22" }, { name: "안대관", time: "(2330-0830)(U)", class: "time-23" }];
+    const personnelData = [
+        { name: "차현모", time: "", class: "time-none" }, { name: "김지훈", time: "(0700-1600)(U)", class: "time-07" }, { name: "오정훈", time: "(0700-1600)(U)", class: "time-07" }, { name: "강상윤", time: "(0700-1600)(U)", class: "time-07" }, { name: "박계원", time: "(0800-1700)(U)", class: "time-08" }, { name: "박효선", time: "(0800-1700)(U)", class: "time-08" }, { name: "신지섭", time: "(0900-1800)(U)", class: "time-09" }, { name: "안혜림", time: "(0900-1800)(U)", class: "time-09" }, { name: "김경환", time: "(0900-1800)(U)", class: "time-09" }, { name: "최윤혁", time: "(0900-1800)(U)", class: "time-09" }, { name: "이길범", time: "(0900-1800)(U)", class: "time-09" }, { name: "박은선", time: "(1100-2000)(U)", class: "time-11" }, { name: "송주현", time: "(1100-2000)(U)", class: "time-11" }, { name: "장재원", time: "(1100-2000)(U)", class: "time-11" }, { name: "이환", time: "(1100-2000)(U)", class: "time-11" }, { name: "박혜영", time: "(1100-2000)(U)", class: "time-11" }, { name: "김동진", time: "(1100-2000)(U)", class: "time-11" }, { name: "신은정", time: "(1300-2200)(U)", class: "time-13" }, { name: "신현철", time: "(1300-2200)(U)", class: "time-13" }, { name: "이도연", time: "(1300-2200)(U)", class: "time-13" }, { name: "박효빈", time: "(1400-2300)(U)", class: "time-14" }, { name: "김가은", time: "(1500-2400)(U)", class: "time-15" }, { name: "서형민", time: "(1500-2400)(U)", class: "time-15" }, { name: "최성환", time: "(1500-2400)(U)", class: "time-15" }, { name: "박수연", time: "(1800-0300)(U)", class: "time-18" }, { name: "이규순", time: "(1800-0300)(U)", class: "time-18" }, { name: "강철환", time: "(1800-0300)(U)", class: "time-18" }, { name: "최선호", time: "(2000-0500)(U)", class: "time-20" }, { name: "최정기", time: "(2000-0500)(U)", class: "time-20" }, { name: "고상연", time: "(2200-0700)(U)", class: "time-22" }, { name: "임다연", time: "(2200-0700)(U)", class: "time-22" }, { name: "임아연", time: "(2200-0700)(U)", class: "time-22" }, { name: "안대관", time: "(2330-0830)(U)", class: "time-23" }
+    ];
+
     const rawUnits = ["용인 고진", "서강대", "경희대 1", "경희대 2", "성남 200", "성남 201", "성남 202", "성남 203", "부산 1", "부산 2", "부산 3", "부산 4", "파주", "리센츠 1", "리센츠 2", "평택 1", "평택 2", "DMZ", "부산 서면", "부천 중동", "고양 래미안", "인력개발원", "엘스 1", "엘스 2", "송도 국캠", "자체순찰 01", "자체순찰 02", "부경대", "김포 1", "김포 2", "평택 지제", "두루아이 3", "쉴더스", "신동백", "청담 르엘", "전주천", "아주대"];
-    const outUnitsList = ["부산 1", "부산 2", "부산 3", "부산 4", "성남 200", "성남 201", "성남 202", "성남 203", "자체순찰 01", "자체순찰 02"];
-    
+    const outUnitsList = ["부산 1", "부산 2", "부산 3", "부산 4", "성남 200", "성남 201", "성남 202", "성남 203", "자체순찰01", "자체순찰02"];
+    const unitsOrder = rawUnits.map(u => u.replace("자체순찰", "자체순찰 "));
+
     let selection = { people: [], shift: [], plan: [], out: [], account: [] };
 
     function handleNameInput() {
         const inputName = document.getElementById('my-name-input').value.trim();
         localStorage.setItem('monitor_my_name', inputName);
-        if (inputName !== "" && selection.people.length > 1) resetSection('people');
+        if (inputName !== "" && selection.people.length > 1) {
+            resetSection('people');
+        }
         updatePersonButtonsState();
         updatePreview();
     }
@@ -82,9 +139,9 @@
         const savedName = localStorage.getItem('monitor_my_name');
         if (savedName) document.getElementById('my-name-input').value = savedName;
         renderContainer('person-container', personnelData.map(p => ({name: p.name, type: 'people', class: p.class})));
-        renderContainer('shift-container', rawUnits.map(name => ({name, type: 'shift', class: ''})));
-        renderContainer('plan-container', rawUnits.map(name => ({name, type: 'plan', class: ''})));
-        renderContainer('out-container', outUnitsList.map(name => ({name, type: 'out', class: ''})));
+        renderContainer('shift-container', unitsOrder.map(name => ({name, type: 'shift', class: ''})));
+        renderContainer('plan-container', unitsOrder.map(name => ({name, type: 'plan', class: ''})));
+        renderContainer('out-container', outUnitsList.map(name => ({name: name.replace("자체순찰", "자체순찰 "), type: 'out', class: ''})));
         updatePersonButtonsState();
         updatePreview();
     }
@@ -102,16 +159,20 @@
                     selection[item.type].splice(index, 1);
                     btn.classList.remove('active');
                 } else {
-                    const max = (document.getElementById('my-name-input').value.trim() === "") ? 2 : 1;
-                    if (item.type === 'people' && selection.people.length < max) {
-                        selection.people.push(item.name);
-                        btn.classList.add('active');
-                    } else if (item.type !== 'people') {
+                    const inputName = document.getElementById('my-name-input').value.trim();
+                    const maxLimit = (inputName === "") ? 2 : 1;
+                    if (item.type === 'people') {
+                        if (selection.people.length < maxLimit) {
+                            selection.people.push(item.name);
+                            btn.classList.add('active');
+                        }
+                    } else {
+                        // 클릭 순서대로 배열 끝에 추가
                         selection[item.type].push(item.name);
                         btn.classList.add('active');
                     }
                 }
-                updatePersonButtonsState();
+                if (item.type === 'people') updatePersonButtonsState();
                 updatePreview();
             };
             container.appendChild(btn);
@@ -120,65 +181,117 @@
 
     function resetSection(type) {
         selection[type] = [];
-        document.querySelectorAll(`#${type}-container .unit-btn`).forEach(btn => { btn.classList.remove('active'); btn.disabled = false; });
+        const containerId = `${type}-container`;
+        document.querySelectorAll(`#${containerId} .unit-btn`).forEach(btn => {
+            btn.classList.remove('active');
+            btn.disabled = false;
+        });
+        if (type === 'people') updatePersonButtonsState();
         updatePreview();
     }
 
     function toggleAccount(val) {
         const btn = document.getElementById(`acc-${val}`);
-        const idx = selection.account.indexOf(val);
-        if (idx > -1) { selection.account.splice(idx, 1); btn.classList.remove('active'); }
-        else { selection.account.push(val); selection.account.sort(); btn.classList.add('active'); }
+        const index = selection.account.indexOf(val);
+        if (index > -1) {
+            selection.account.splice(index, 1);
+            btn.classList.remove('active');
+        } else {
+            selection.account.push(val);
+            selection.account.sort();
+            btn.classList.add('active');
+        }
         updatePreview();
     }
 
     function updatePersonButtonsState() {
-        const max = (document.getElementById('my-name-input').value.trim() === "") ? 2 : 1;
-        const isFull = selection.people.length >= max;
-        document.querySelectorAll('#person-container .unit-btn').forEach(btn => { btn.disabled = isFull && !btn.classList.contains('active'); });
+        const inputName = document.getElementById('my-name-input').value.trim();
+        const maxLimit = (inputName === "") ? 2 : 1;
+        const personButtons = document.querySelectorAll('#person-container .unit-btn');
+        const isFull = selection.people.length >= maxLimit;
+        personButtons.forEach(btn => { btn.disabled = isFull && !btn.classList.contains('active'); });
     }
 
-    function formatUnitsWithGrouping(arr) {
-        if (arr.length === 0) return "-";
-        const res = []; const processed = new Set();
-        arr.forEach((item, i) => {
-            if (processed.has(i)) return;
+    // [핵심 변경] 클릭 순서를 유지하되 같은 그룹(이름)만 모아서 표시
+    function formatUnitsWithGrouping(selectedArray) {
+        if (selectedArray.length === 0) return "-";
+        
+        const groups = [];
+        const processedIndexes = new Set();
+
+        selectedArray.forEach((item, index) => {
+            if (processedIndexes.has(index)) return;
+
+            // 기체명과 번호 분리 (예: "부산 1" -> "부산", "1")
             const match = item.match(/^(.*)\s(\d+)$/);
-            const base = match ? match[1] : item;
-            const group = [];
-            arr.forEach((it, idx) => {
-                const m = it.match(/^(.*)\s(\d+)$/);
-                if ((m ? m[1] : it) === base) { group.push({n: m ? m[2] : "", idx}); processed.add(idx); }
+            const baseName = match ? match[1] : item;
+            
+            // 현재 기체와 이름이 같은 것들을 모두 찾아 그룹화 (순서 상관없이 묶음)
+            const sameGroup = [];
+            selectedArray.forEach((innerItem, innerIndex) => {
+                const innerMatch = innerItem.match(/^(.*)\s(\d+)$/);
+                const innerBaseName = innerMatch ? innerMatch[1] : innerItem;
+                
+                if (innerBaseName === baseName) {
+                    sameGroup.push({
+                        fullName: innerItem,
+                        num: innerMatch ? innerMatch[2] : "",
+                        originalIndex: innerIndex
+                    });
+                    processedIndexes.add(innerIndex);
+                }
             });
-            if (group.length > 1 && group[0].n !== "") {
-                res.push(`${base} ${group.map(g=>g.n).sort((a,b)=>a-b).join(", ")}`);
-            } else { res.push(arr[group[0].idx]); }
+
+            // 번호 순으로 정렬하여 리턴 (예: "부산 2, 1" 이 클릭되어도 "부산 1, 2"로 표시)
+            if (sameGroup.length > 1 && sameGroup[0].num !== "") {
+                const nums = sameGroup.map(g => g.num).sort((a, b) => parseInt(a) - parseInt(b)).join(", ");
+                groups.push(`${baseName} ${nums}`);
+            } else {
+                groups.push(sameGroup[0].fullName);
+            }
         });
-        return res.join(" / ");
+
+        return groups.join(" / ");
     }
 
     function updatePreview() {
-        const h = String(new Date(new Date().getTime() + 3600000).getHours()).padStart(2, '0');
-        const my = document.getElementById('my-name-input').value.trim();
+        const now = new Date(); now.setHours(now.getHours() + 1);
+        const hour = String(now.getHours()).padStart(2, '0');
+        const inputName = document.getElementById('my-name-input').value.trim();
+        
         let p1 = "@본인", p2 = "@대기자";
-        if (my) {
-            const info = personnelData.find(p => p.name === my);
-            p1 = `@${my}${info ? info.time : ""}`;
-            if (selection.people[0]) {
-                const info2 = personnelData.find(p => p.name === selection.people[0]);
-                p2 = `@${selection.people[0]}${info2 ? info2.time : ""}`;
-            }
+        if (inputName !== "") {
+            const info = personnelData.find(p => p.name === inputName);
+            p1 = `@${inputName}${info ? info.time : ""}`;
+            p2 = selection.people.length > 0 ? selection.people.map(n => {
+                const info = personnelData.find(p => p.name === n);
+                return `@${n}${info ? info.time : ""}`;
+            })[0] : "@대기자";
         } else {
-            if (selection.people[0]) p1 = `@${selection.people[0]}${personnelData.find(p=>p.name===selection.people[0]).time}`;
-            if (selection.people[1]) p2 = `@${selection.people[1]}${personnelData.find(p=>p.name===selection.people[1]).time}`;
+            if (selection.people.length >= 1) {
+                const info = personnelData.find(p => p.name === selection.people[0]);
+                p1 = `@${selection.people[0]}${info ? info.time : ""}`;
+            }
+            if (selection.people.length === 2) {
+                const info = personnelData.find(p => p.name === selection.people[1]);
+                p2 = `@${selection.people[1]}${info ? info.time : ""}`;
+            }
         }
-        const out = selection.out.length > 0 ? `\n• 출차: (${h}:50) ${formatUnitsWithGrouping(selection.out)}` : '';
-        document.getElementById('preview').innerText = `[${h}]시 다중 모니터링 교대
-${p1} > ${p2}
-• 교대: ${formatUnitsWithGrouping(selection.shift)}
-• 예정: ${formatUnitsWithGrouping(selection.plan)}${out}
 
-${selection.account.length === 0 ? "• 멀티 계정 미사용 중" : "• 멀티 계정 " + selection.account.join(", ") + " 사용 중"}`;
+        let accountText = selection.account.length === 0 ? "• 멀티 계정 미사용" : `• 멀티 계정 ${selection.account.join(", ")} 사용 중`;
+        
+        // [수정 포인트] 출차 정보에 불렛 기호 추가 및 레이아웃 정리
+        const shiftText = `• 교대: ${formatUnitsWithGrouping(selection.shift)}`;
+        const planText = `• 예정: ${formatUnitsWithGrouping(selection.plan)}`;
+        const outText = selection.out.length > 0 ? `\n• 출차: (${hour}:50) ${formatUnitsWithGrouping(selection.out)}` : '';
+
+        const result = `[${hour}]시 다중 모니터링 교대
+${p1} > ${p2}
+${shiftText}
+${planText}${outText}
+
+${accountText}`;
+        document.getElementById('preview').innerText = result;
     }
 
     function copyToClipboard() {
@@ -187,12 +300,14 @@ ${selection.account.length === 0 ? "• 멀티 계정 미사용 중" : "• 멀�
         textarea.value = text; document.body.appendChild(textarea);
         textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea);
         const btn = document.getElementById('copyBtn');
-        const oldText = btn.innerText;
-        btn.innerText = "복사 완료!";
-        btn.classList.add('success');
-        setTimeout(() => { btn.innerText = oldText; btn.classList.remove('success'); }, 800);
+        const old = btn.innerText; btn.innerText = "복사 완료!"; btn.style.backgroundColor = "#4dabf7";
+        setTimeout(() => btn.innerText = old, 800);
     }
     init();
 </script>
 </body>
 </html>
+
+
+
+

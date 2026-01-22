@@ -72,7 +72,7 @@
                 <div class="btn-group" id="shift-container"></div>
             </div>
             <div class="section">
-                <div class="section-header"><span class="section-title">3. 예정 (🟢: 다음 시간 예정)</span><button class="reset-btn" onclick="resetSection('plan')">전체 해제</button></div>
+                <div class="section-header"><span class="section-title">3. 예정 (🟢: ${currentH}시 예정)</span><button class="reset-btn" onclick="resetSection('plan')">전체 해제</button></div>
                 <div class="btn-group" id="plan-container"></div>
             </div>
         </div>
@@ -81,7 +81,7 @@
     <div class="extra-section">
         <div class="half-grid">
             <div class="section">
-                <div class="section-header"><span class="section-title">4. 출차 예정 (🟢: 다음 시간 예정)</span><button class="reset-btn" onclick="resetSection('out')">전체 해제</button></div>
+                <div class="section-header"><span class="section-title">4. 출차 예정 (🟢)</span><button class="reset-btn" onclick="resetSection('out')">전체 해제</button></div>
                 <div class="btn-group" id="out-container"></div>
             </div>
             <div class="section">
@@ -195,6 +195,11 @@
         
         updatePersonButtonsState();
         applyHighlight(); 
+		// --- 섹션 타이틀에 시간 표시 ---
+        const currentH = String((new Date().getHours() + 1) % 24).padStart(2, '0');
+        document.querySelector('.units-section .section:nth-child(2) .section-title').innerText = `3. 예정 (🟢: ${currentH}시 예정)`;
+        document.querySelector('.extra-section .section:first-child .section-title').innerText = `4. 출차 예정 (🟢)`;
+
         updatePreview();
     }
 
@@ -383,6 +388,7 @@
 </script>
 </body>
 </html>
+
 
 
 

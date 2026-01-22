@@ -49,7 +49,7 @@
 <div class="main-wrapper">
     <div class="section person-section">
         <div class="section-header">
-            <span class="section-title">1. 대상</span>
+            <span class="section-title">1. 교대 대상</span>
             <div class="user-save-zone">
                 <span>이름:</span><input type="text" id="my-name-input" oninput="handleNameInput()" placeholder="본인 이름">
             </div>
@@ -68,7 +68,7 @@
     <div class="units-section">
         <div class="half-grid">
             <div class="section">
-                <div class="section-header"><span class="section-title">2. 진행 중</span><button class="reset-btn" onclick="resetSection('shift')">전체 해제</button></div>
+                <div class="section-header"><span class="section-title">2. 현재 모니터링 중</span><button class="reset-btn" onclick="resetSection('shift')">전체 해제</button></div>
                 <div class="btn-group" id="shift-container"></div>
             </div>
             <div class="section">
@@ -85,7 +85,7 @@
                 <div class="btn-group" id="out-container"></div>
             </div>
             <div class="section">
-                <div class="section-header"><span class="section-title">5. 멀티 계정</span><button class="reset-btn" onclick="resetSection('account')">전체 해제</button></div>
+                <div class="section-header"><span class="section-title">5. 현재 사용 중인 멀티 계정</span><button class="reset-btn" onclick="resetSection('account')">전체 해제</button></div>
                 <div class="btn-group" id="account-container">
                     <button class="unit-btn time-none" id="acc-01" onclick="toggleAccount('01')">계정 01</button>
                     <button class="unit-btn time-none" id="acc-02" onclick="toggleAccount('02')">계정 02</button>
@@ -388,6 +388,7 @@
 </script>
 </body>
 </html>
+
 
 
 

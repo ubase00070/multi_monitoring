@@ -225,15 +225,27 @@
                     if (note) {
                         popup.innerHTML = `<b>[${item.name} 특이사항]</b>${note}`;
                         popup.style.display = 'block';
-                        popup.style.left = (e.pageX + 10) + 'px';
-                        popup.style.top = (e.pageY + 10) + 'px';
+                        updatePopupPosition(e);
                     }
                 };
                 btn.onmousemove = (e) => {
-                    popup.style.left = (e.pageX + 10) + 'px';
-                    popup.style.top = (e.pageY + 10) + 'px';
+                    updatePopupPosition(e);
                 };
-                btn.onmouseleave = () => { popup.style.display = 'none'; };
+
+				// 팝업 위치 계산 내부 함수
+                function updatePopupPosition(e) {
+                    const padding = 15; // 마우스와 팝업 사이 간격
+                    const popupWidth = 280; // CSS에 설정된 Width
+                    let leftPos = e.pageX + padding;
+                
+                    //// 만약 팝업이 오른쪽 화면 끝(window.innerWidth)을 넘어간다면 왼쪽으로 이동
+                    if (leftPos + popupWidth > window.innerWidth) {
+                    leftPos = e.pageX - popupWidth - padding;
+                    }
+                    popup.style.left = leftPos + 'px';
+                    popup.style.top = (e.pageY + padding) + 'px';
+                }   
+				btn.onmouseleave = () => { popup.style.display = 'none'; };
             }
 
             btn.onclick = () => {
@@ -387,6 +399,7 @@
 </script>
 </body>
 </html>
+
 
 
 

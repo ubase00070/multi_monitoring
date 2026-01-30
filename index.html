@@ -49,6 +49,11 @@
             display: inline-block;
         }
 
+        /* [보완] ID가 화면 프리뷰에서 텍스트로 보이지 않게 숨김 */
+        .hidden-id {
+            display: none;
+        }
+
         .slack-time {
             color: #1D9BD1;
             font-size: 14px;
@@ -134,39 +139,39 @@
 <script>
 
     const personnelData = [
-        { name: "김지훈", time: "(0700-1600)(U)", class: "time-07" }, 
-        { name: "오정훈", time: "(0700-1600)(U)", class: "time-07" }, 
-        { name: "강상윤", time: "(0700-1600)(U)", class: "time-07" }, 
-        { name: "박계원", time: "(0800-1700)(U)", class: "time-08" }, 
-        { name: "박효선", time: "(0800-1700)(U)", class: "time-08" }, 
-        { name: "신지섭", time: "(0900-1800)(U)", class: "time-09" }, 
-        { name: "안혜림", time: "(0900-1800)(U)", class: "time-09" }, 
-        { name: "김경환", time: "(0900-1800)(U)", class: "time-09" }, 
-        { name: "최윤혁", time: "(0900-1800)(U)", class: "time-09" }, 
-        { name: "이길범", time: "(0900-1800)(U)", class: "time-09" }, 
-        { name: "박은선", time: "(1100-2000)(U)", class: "time-11" }, 
-        { name: "송주현", time: "(1100-2000)(U)", class: "time-11" }, 
-        { name: "장재원", time: "(1100-2000)(U)", class: "time-11" }, 
-        { name: "이환", time: "(1100-2000)(U)", class: "time-11" }, 
-        { name: "박혜영", time: "(1100-2000)(U)", class: "time-11" }, 
-        { name: "김동진", time: "(1100-2000)(U)", class: "time-11" }, 
-        { name: "신은정", time: "(1300-2200)(U)", class: "time-13" }, 
-        { name: "신현철", time: "(1300-2200)(U)", class: "time-13" }, 
-        { name: "이도연", time: "(1300-2200)(U)", class: "time-13" }, 
-        { name: "박효빈", time: "(1400-2300)(U)", class: "time-14" }, 
-        { name: "김가은", time: "(1500-2400)(U)", class: "time-15" }, 
-        { name: "서형민", time: "(1500-2400)(U)", class: "time-15" }, 
-        { name: "최성환", time: "(1500-2400)(U)", class: "time-15" }, 
-        { name: "박수연", time: "(1800-0300)(U)", class: "time-18" }, 
-        { name: "이규순", time: "(1800-0300)(U)", class: "time-18" }, 
-        { name: "강철환", time: "(1800-0300)(U)", class: "time-18" }, 
-        { name: "김소연", time: "(2000-0500)(U)", class: "time-20" }, 
-        { name: "최선호", time: "(2000-0500)(U)", class: "time-20" }, 
-        { name: "최정기", time: "(2000-0500)(U)", class: "time-20" }, 
-        { name: "고상연", time: "(2200-0700)(U)", class: "time-22" }, 
-        { name: "임다연", time: "(2200-0700)(U)", class: "time-22" }, 
-        { name: "임아연", time: "(2200-0700)(U)", class: "time-22" }, 
-        { name: "안대관", time: "(2330-0830)(U)", class: "time-23" }
+        { name: "김지훈", time: "(0700-1600)(U)", class: "time-07", id: "U07LD5HA6KC" }, 
+        { name: "오정훈", time: "(0700-1600)(U)", class: "time-07", id: "U081BN7R3FX" }, 
+        { name: "강상윤", time: "(0700-1600)(U)", class: "time-07", id: "U0A5CQVK8E5" }, 
+        { name: "박계원", time: "(0800-1700)(U)", class: "time-08", id: "U07RUM3AMCP" }, 
+        { name: "박효선", time: "(0800-1700)(U)", class: "time-08", id: "U07PFT5K2GN" }, 
+        { name: "신지섭", time: "(0900-1800)(U)", class: "time-09", id: "U07KCEM6DU7" }, 
+        { name: "안혜림", time: "(0900-1800)(U)", class: "time-09", id: "U07SD6LAGFJ" }, 
+        { name: "김경환", time: "(0900-1800)(U)", class: "time-09", id: "U0837ER4DH7" }, 
+        { name: "최윤혁", time: "(0900-1800)(U)", class: "time-09", id: "U09LVJW0LTD" }, 
+        { name: "이길범", time: "(0900-1800)(U)", class: "time-09", id: "U09TAQYHAAJ" }, 
+        { name: "박은선", time: "(1100-2000)(U)", class: "time-11", id: "U07L9T58G3E" }, 
+        { name: "송주현", time: "(1100-2000)(U)", class: "time-11", id: "U0833HRE3QD" }, 
+        { name: "장재원", time: "(1100-2000)(U)", class: "time-11", id: "U0876898WG6" }, 
+        { name: "이환", time: "(1100-2000)(U)", class: "time-11", id: "U08L5G3E63Z" }, 
+        { name: "박혜영", time: "(1100-2000)(U)", class: "time-11", id: "U0A53F3BJ84" }, 
+        { name: "김동진", time: "(1100-2000)(U)", class: "time-11", id: "U0A75MK1TND" }, 
+        { name: "신은정", time: "(1300-2200)(U)", class: "time-13", id: "U0A4XRZG3BQ" }, 
+        { name: "신현철", time: "(1300-2200)(U)", class: "time-13", id: "U09N857TDQU" }, 
+        { name: "이도연", time: "(1300-2200)(U)", class: "time-13", id: "U09LPCHL8TW" }, 
+        { name: "박효빈", time: "(1400-2300)(U)", class: "time-14", id: "U0A32RYP77F" }, 
+        { name: "김가은", time: "(1500-2400)(U)", class: "time-15", id: "U0A152QPH16" }, 
+        { name: "서형민", time: "(1500-2400)(U)", class: "time-15", id: "U0A0ANUTX5G" }, 
+        { name: "최성환", time: "(1500-2400)(U)", class: "time-15", id: "U07FBS6APHA" }, 
+        { name: "박수연", time: "(1800-0300)(U)", class: "time-18", id: "U07E7AMFUQ2" }, 
+        { name: "이규순", time: "(1800-0300)(U)", class: "time-18", id: "U081BN70T0D" }, 
+        { name: "강철환", time: "(1800-0300)(U)", class: "time-18", id: "U0854PMM3B3" }, 
+        { name: "김소연", time: "(2000-0500)(U)", class: "time-20", id: "U08552CSB3K" }, 
+        { name: "최선호", time: "(2000-0500)(U)", class: "time-20", id: "U07EL0TSG0H" }, 
+        { name: "최정기", time: "(2000-0500)(U)", class: "time-20", id: "U07EW4HTGCQ" }, 
+        { name: "고상연", time: "(2200-0700)(U)", class: "time-22", id: "U08LT371YDU" }, 
+        { name: "임다연", time: "(2200-0700)(U)", class: "time-22", id: "U07MBG99B1S" }, 
+        { name: "임아연", time: "(2200-0700)(U)", class: "time-22", id: "U07MMMNQZ1P" }, 
+        { name: "안대관", time: "(2330-0830)(U)", class: "time-23", id: "U07E4DMLYR3" }
     ];    const rawUnits = ["용인 고진", "서강대", "경희대 1", "경희대 2", "성남 200", "성남 201", "성남 202", "성남 203", "부산 1", "부산 2", "부산 3", "부산 4", "파주", "리센츠 1", "리센츠 2", "평택 1", "평택 2", "부산 서면", "부천 중동", "두루아이 5", "인력개발원", "엘스 1", "엘스 2", "송도 국캠", "자체순찰 01", "자체순찰 02", "김포 1", "김포 2", "평택 지제", "두루아이 3", "쉴더스", "신동백", "청담 르엘", "전주천", "아주대 1", "아주대 2", "고양 래미안", "강원대 1", "강원대 2", "DMZ", "부경대"];
     const outUnitsList = ["부산 1", "부산 2", "부산 3", "부산 4", "성남 200", "성남 201", "성남 202", "성남 203", "자체순찰 01", "자체순찰 02", "신동백", "청담 르엘", "전주천", "두루아이 5"];
 
@@ -406,12 +411,18 @@
         const h = String(nextH).padStart(2, '0');
         const inputName = document.getElementById('my-name-input').value.trim();
     
-        // [보완] ID가 있을 경우 프리뷰에는 숨기고 복사할 때는 포함시키는 로직
+        // [수정] 중복 출력을 방지하기 위해 구조를 변경했습니다.
         const getP = (name) => { 
             const info = personnelData.find(p => p.name === name); 
             const timeStr = info ? info.time : "";
-            const idPart = (info && info.id) ? `<span class="hidden-id"> <@${info.id}> </span>` : "";
-            return `<span class="slack-mention">@${name}</span>${idPart}<span class="slack-time">${timeStr}</span>`; 
+            
+            if (info && info.id) {
+                // 핵심: <@ID> 앞뒤로 한 칸씩 공백을 주어 슬랙이 다른 텍스트와 혼동하지 않게 합니다.
+                // 화면(프리뷰)에서는 보이지 않지만 복사 시에는 포함됩니다.
+                return `<span class="slack-mention">@${name}</span><span class="hidden-id"> <@${info.id}> </span><span class="slack-time">${timeStr}</span>`;
+            } else {
+                return `<span class="slack-mention">@${name}</span> <span class="slack-time">${timeStr}</span>`;
+            }
         };
 
         let p1 = `<span class="slack-mention">@본인</span>`, p2 = `<span class="slack-mention">@대기자</span>`;
@@ -423,10 +434,11 @@
             if (selection.people[0]) p1 = getP(selection.people[0]);
             if (selection.people[1]) p2 = getP(selection.people[1]);
         }
+        
 
         let lines = [
             `[${h}시 다중 모니터링 교대]`,
-            `${p1} > ${p2}`,
+            `${p1}  >  ${p2}`,
             `• 교대: ${formatUnitsWithGrouping(selection.shift)}`,
             `• 예정: ${formatUnitsWithGrouping(selection.plan)}`
         ];
@@ -451,10 +463,9 @@
         document.getElementById('preview').innerHTML = lines.join('\n');
     }
     
-    // [보완] 텍스트가 아닌 innerText를 사용하여 hidden-id까지 긁어오도록 처리
     function copyToClipboard() {
         const preview = document.getElementById('preview');
-        // 숨겨진 span 내의 <@ID>를 텍스트로 전환하여 가져옵니다.
+        // innerText를 사용하면 .hidden-id { display: none } 처리된 텍스트도 긁어오는 브라우저 특성을 이용합니다.
         const textToCopy = preview.innerText;
 
         const textarea = document.createElement('textarea');
@@ -474,4 +485,3 @@
 </script>
 </body>
 </html>
-

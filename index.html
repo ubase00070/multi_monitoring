@@ -380,7 +380,9 @@
 
             const out55 = selection.out.filter(u => u.includes("두루아이 5"));
             const out40 = selection.out.filter(u => exUnits.some(ex => u.includes(ex)));
-            const out50 = selection.out.filter(u => !exUnits.some(ex => u.includes(ex)) && u !== "부산국립과학관");
+            const out50 = selection.out.filter(u => !u.includes("두루아이 5") && !exUnits.some(ex => u.includes(ex)) && u !== "부산국립과학관");
+
+            
             const outScience = selection.out.filter(u => u === "부산국립과학관");
             let outParts = [];
             if (out40.length > 0) outParts.push(`(${h}:40) ${formatUnitsWithGrouping(out40)}`);
@@ -409,6 +411,7 @@
 </script>
 </body>
 </html>
+
 
 
 
